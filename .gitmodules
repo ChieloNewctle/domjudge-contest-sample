@@ -1,0 +1,3 @@
+[submodule "olymp.sty"]
+	path = olymp.sty
+	url = git@github.com:ChieloNewctle/olymp.sty.git
