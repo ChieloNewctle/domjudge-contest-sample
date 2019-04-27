@@ -19,4 +19,6 @@ you can install `texlive-xetex` and `texlive-lang-chinese` to build without modi
 
 - `git submodule init`
 - `git submodule update`
-- `./build.sh`
+- `./clean.sh`
+- `./compile_tex.sh`
+- `./archive.sh`
