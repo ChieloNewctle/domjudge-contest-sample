@@ -1,6 +1,8 @@
 #!/bin/bash
 
-for i in z a; do
+source problems.sh
+
+for i in $problems; do
     echo $i
     (cd problems/$i && rm -f $i.zip problem.aux problem.log problem.pdf)
 done

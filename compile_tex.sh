@@ -1,6 +1,8 @@
 #!/bin/bash
 
-for i in z a; do # first compile the tex file that imports all the problems
+source problems.sh
+
+for i in $problems; do # first compile the tex file that imports all the problems
     echo $i
     (cd problems/$i \
         && xelatex problem.tex \
