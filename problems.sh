@@ -1,1 +1,1 @@
-problems="z a b c"
+problems="z a"
