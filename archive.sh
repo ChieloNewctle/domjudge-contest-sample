@@ -1,7 +1,5 @@
 #!/bin/bash
 
-./compile_tex.sh
-
 source problems.sh
 
 for i in $problems; do
