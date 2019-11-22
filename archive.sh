@@ -1,6 +1,6 @@
 #!/bin/bash
 
-zip_prefix=c1-
+zip_prefix=usaco-c1-
 
 source problems.sh
 
