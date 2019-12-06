@@ -6,7 +6,7 @@ archive() {
     (cd problems/$1 \
         && rm -f $prefix-$1.zip \
         && zip -r $prefix-$1.zip $(realpath --relative-to=$PWD \
-            $(readlink -e problem.pdf problem.yaml domjudge-problem.ini data submissions)) \
+            $(readlink -e problem.pdf problem.yaml domjudge-problem.ini data submissions output_validators)) \
     )
 }
 
