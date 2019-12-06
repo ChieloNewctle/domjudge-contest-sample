@@ -58,24 +58,17 @@ def find_tags(node, keys):
     dfs(node)
     return results
 
+def check_nodes(nodes, keys):
+    for k in keys:
+        if nodes[k] is None:
+            raise Exception(f'no occurrence of `{k}` is found')
+
 @functools.lru_cache
 def get_xml_nodes(src_root):
-    def check_nodes(nodes, keys):
-        for k in keys:
-            if nodes[k] is None:
-                raise Exception(
-                    f'no occurrence of `{k}` is found'
-                )
     root = read_xml(src_root / 'problem.xml')
     nodes = find_tags(root, {'problem', 'names', 'judging', 'solutions', 'checker', 'interactor'})
     check_nodes(nodes, {'problem', 'names', 'judging', 'solutions', 'checker'})
-    keys = {
-        'time-limit', 'memory-limit',
-        'input-path-pattern', 'answer-path-pattern',
-        'test-count', 'tests',
-    }
-    nodes.update(find_tags(nodes['judging'], keys))
-    check_nodes(nodes, keys)
+    nodes.update(find_tags(next(iter(nodes['judging'])), {'time-limit', 'memory-limit'}))
     return nodes
 
 
@@ -114,15 +107,26 @@ def make_problem_info(args):
 
 def read_testset(args):
     nodes = get_xml_nodes(args.src_root)
-    tests = list(nodes['tests'])
+    keys = {
+        'time-limit', 'memory-limit',
+        'input-path-pattern', 'answer-path-pattern',
+        'test-count', 'tests',
+    }
     testset = {'sample': [], 'secret': []}
-    for i in range(1, 1 + int(nodes['test-count'].text)):
-        u, v = map(lambda x: nodes[x].text % i,
-            ('input-path-pattern', 'answer-path-pattern'))
-        if tests[i - 1].get('sample', '').lower() == 'true':
-            testset['sample'].append((i, u, v))
-        else:
-            testset['secret'].append((i, u, v))
+    cnt = 0
+    for testset_node in nodes['judging']:
+        t_nodes = find_tags(testset_node, keys)
+        check_nodes(t_nodes, keys)
+        assert len(list(t_nodes['tests'])) == int(t_nodes['test-count'].text)
+        for i, t in enumerate(t_nodes['tests']):
+            u, v = map(lambda x: t_nodes[x].text % (i + 1),
+                ('input-path-pattern', 'answer-path-pattern'))
+            if t.get('sample', '').lower() == 'true':
+                cnt += 1
+                testset['sample'].append((cnt, u, v))
+            else:
+                cnt += 1
+                testset['secret'].append((cnt, u, v))
     return testset
 
 def copy_data(args):
@@ -168,6 +172,8 @@ type_map = {
     'rejected': 'wrong_answer',
     'memory_limit_exceeded': 'run_time_error',
     'time_limit_exceeded': 'time_limit_exceeded',
+    'time_limit_exceeded_or_accepted': 'time_limit_exceeded',
+    'time_limit_exceeded_or_memory_limit_exceeded': 'time_limit_exceeded',
 }
 
 def copy_solutions(args):
