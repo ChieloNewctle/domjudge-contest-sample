@@ -296,9 +296,7 @@ def copy_checker_and_interactor(args):
     os.chmod(build_script_path, os.stat(build_script_path).st_mode | stat.S_IEXEC)
 
 
-def main():
-    args = parser.parse_args()
-
+def main(args):
     def wrap(func):
         func_name = ' '.join(func.__qualname__.split('_')).capitalize()
         try:
@@ -317,4 +315,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    args = parser.parse_args()
+
+    main(args)
