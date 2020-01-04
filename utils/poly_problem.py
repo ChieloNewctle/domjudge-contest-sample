@@ -63,7 +63,7 @@ def check_nodes(nodes, keys):
         if nodes[k] is None:
             raise Exception(f'no occurrence of `{k}` is found')
 
-@functools.lru_cache
+# @functools.lru_cache
 def get_xml_nodes(src_root):
     root = read_xml(src_root / 'problem.xml')
     nodes = find_tags(root, {'problem', 'names', 'judging', 'solutions', 'checker', 'interactor'})
