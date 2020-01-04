@@ -159,11 +159,16 @@ def write_wrap_tex(args):
 ''' % pid
     write(args.dst_root / 'problem_statement' / 'wrap.tex', s)
 
+
 def copy_statement(args):
     src_path = args.src_root / 'statements' / args.language
     for i in src_path.glob('**/*'):
         copy(i, args.dst_root / 'problem_statement' / i.relative_to(src_path))
     write_wrap_tex(args)
+    try:
+        os.symlink('../../../olymp.sty/olymp.sty', args.dst_root / 'problem_statement/olymp.sty')
+    except OSError:
+        print('[FAIL] Create symlink to olymp.sty')
 
 
 type_map = {
