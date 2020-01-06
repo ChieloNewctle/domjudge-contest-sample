@@ -1,14 +1,13 @@
 #!/bin/bash
 
-zip_prefix=usaco-c1-
-
 source problems.sh
 
 for i in $problems; do
+    dest=$zip_prefix-$i.zip
     echo $i
-    dest=$zip_prefix$1.zip
     (cd problems/$i \
         && rm -f $dest && zip -r $dest $(realpath --relative-to=$PWD \
             $(readlink -e problem.pdf problem.yaml domjudge-problem.ini data submissions)) \
+        && mv $dest .. \
     )
 done
