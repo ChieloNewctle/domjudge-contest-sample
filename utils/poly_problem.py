@@ -203,10 +203,10 @@ def copy_solutions(args):
             continue
 
         if solution_type[src] == 'python.3':
-            name = filename.replace('.py3', '.py').replace('.py', '.py3')
+            name = filename.replace('.py3', '.py') # .replace('.py', '.py3')
             dst = args.dst_root / 'submissions' / tag / name
         elif solution_type[src] == 'python.2':
-            name = filename.replace('.py2', '.py').replace('.py', '.py2')
+            name = filename.replace('.py2', '.py') # .replace('.py', '.py2')
             dst = args.dst_root / 'submissions' / tag / name
         else:
             dst = args.dst_root / 'submissions' / tag / filename
