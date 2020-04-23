@@ -4036,6 +4036,7 @@ void registerGen(int argc, char *argv[]) {
 }
 #endif
 
+#ifndef DOMJUDGE
 void registerInteraction(int argc, char *argv[]) {
     __testlib_ensuresPreconditions();
 
@@ -4086,6 +4087,38 @@ void registerInteraction(int argc, char *argv[]) {
     else
         ans.name = "unopened answer stream";
 }
+#else // DOMJUDGE
+void registerInteraction(int argc, char *argv[]) {
+    __testlib_ensuresPreconditions();
+
+    testlibMode = _interactor;
+    __testlib_set_binary(stdin);
+
+    if (argc == 3)
+    {
+        resultName = "";
+        appesMode = false;
+    }
+
+    if (argc == 4)
+    {
+        resultName = std::string(argv[3]) + "judgemessage.txt";
+        tout.open(std::string(argv[3]) +  "teammessage.txt", std::ios_base::out);
+        if (tout.fail() || !tout.is_open())
+            quit(_fail, std::string("Can not write to the test-output-file '") + argv[2] + std::string("'"));
+        appesMode = false;
+    }
+
+    inf.init(argv[1], _input);
+
+    ouf.init(stdin, _output);
+
+    if (argc >= 3)
+        ans.init(argv[2], _answer);
+    else
+        ans.name = "unopened answer stream";
+}
+#endif // DOMJUDGE
 
 void registerValidation() {
     __testlib_ensuresPreconditions();
@@ -4138,6 +4171,7 @@ void feature(const std::string &feature) {
     validator.feature(feature);
 }
 
+#ifndef DOMJUDGE
 void registerTestlibCmd(int argc, char *argv[]) {
     __testlib_ensuresPreconditions();
 
@@ -4177,6 +4211,29 @@ void registerTestlibCmd(int argc, char *argv[]) {
     ouf.init(argv[2], _output);
     ans.init(argv[3], _answer);
 }
+#else // DOMJUDGE
+void registerTestlibCmd(int argc, char *argv[]) {
+    __testlib_ensuresPreconditions();
+
+    testlibMode = _checker;
+    __testlib_set_binary(stdin);
+
+    appesMode = false;
+    if (argc == 3) {
+        resultName = "";
+        appesMode = false;
+    }
+
+    if (argc == 4) {
+        resultName = std::string(argv[3]) + "judgemessage.txt";
+        appesMode = false;
+    }
+
+    inf.init(argv[1], _input);
+    ouf.init(stdin, _output);
+    ans.init(argv[2], _answer);
+}
+#endif // DOMJUDGE
 
 void registerTestlib(int argc, ...) {
     if (argc < 3 || argc > 5)
